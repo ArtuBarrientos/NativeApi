@@ -10,30 +10,29 @@ import {
 
 
 const Animations = ()=>{
-    const [animate] =useState(new Animated.Value(30))
+    const [animate] =useState(new Animated.Value(40))
     const [animateXY] = useState(new Animated.ValueXY({x: 0, y: 0}))
-    const [ radius ] = useState(new Animated.Value(0))
-    const {width, height} = Dimensions.get('window');
     const [off, setOnn] = useState(false);
-    const [num, setNum] = useState(1)
+    const [num, setNum] = useState(50)
 
     useEffect(() => {
         if (off) {
+            
             Animated.sequence([
                 Animated.timing(animateXY, {
-                    toValue: { x: height /num, y: 0 },
-                    duration: 3000
-                }),
-                Animated.timing(animate, {
-                    toValue: 60,
-                    duration: 3000
-                }),
-                Animated.timing(radius, {
-                    toValue: 40,
-                    duration: 2000
-                })
+                    toValue: { x: 10, y: num },
+                    duration: 500
+                }),   
             ]).start()
-        }  
+
+        }else{
+            Animated.sequence([
+                Animated.timing(animateXY, {
+                    toValue: { x: num, y: 300 },
+                    duration: 2000
+                }),   
+            ]).stop()
+        } 
     })
 
     return(
@@ -44,33 +43,39 @@ const Animations = ()=>{
                         width: animate, 
                         height: animate, 
                         backgroundColor: 'red',
-                        position: 'absolute',
-                        right: animateXY.y,
-                        left: animateXY.x,
-                        borderRadius: radius
+                        left:animateXY.y,
+                        borderRadius: 50
                         }
                     }>
                </Animated.View>
-                    
-                    <TouchableOpacity 
-                    style={{backgroundColor:'gray'}}
-                    onPress={()=>setOnn(1)}
+              <View>
+                  <TouchableOpacity 
+                    style={{backgroundColor:'gray',marginBottom:20}}
+                    onPress={()=>setOnn(true)}
                     >
-                    <Text style={{fontSize:20}}>Oprime esto crack</Text>
+                    <Text style={{fontSize:20}}>On</Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
-                
-                    onPress={()=>setNum(-1)}
+                    style={{backgroundColor:'yellow',marginBottom:20}}
+                    onPress={()=>setOnn(false)}
+                    >
+                    <Text style={{fontSize:20}}>Off</Text>
+                    </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={{backgroundColor:'red',marginBottom:20}}
+                    onPress={()=>setNum(10)}
                     >
                     <Text style={{fontSize:20}}>2</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity 
-                
-                    onPress={()=>setNum(0)}
+                    style={{backgroundColor:'green'}}
+                    onPress={()=>setNum(50)}
                     >
                     <Text style={{fontSize:20}}>3</Text>
                   </TouchableOpacity>
+              </View>
+                    
                 
                 
             
@@ -82,9 +87,9 @@ const Animations = ()=>{
         const styles = StyleSheet.create({
             container: {
                 flex: 1,
-                justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor: '#F5FCFF',
+                marginTop:25
             },
             welcome: {
                 fontSize: 20,

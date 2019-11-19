@@ -1,29 +1,49 @@
 import React,{ useState, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity,Text,View } from 'react-native';
+import { StyleSheet, TouchableOpacity,Text,View,Animated,Dimensions } from 'react-native';
 import { Container, Content, Icon, Thumbnail } from 'native-base';
 import axios from 'axios';
 import ModalCreateItem from './ModalCreateItem';
 import config from './config';
 import {SwipeableFlatList} from 'react-native-swipeable-flat-list';
-//import Animated from 'react-native-reanimated';
 
 const HomeScreen= props => {
     const [ processor, setProcessor ] = useState([]);
     const [theme, setTheme] = useState(true);
 
+    const [animateXY] = useState(new Animated.ValueXY({x: 40, y: 0}))
+    const [off, setOnn] = useState(false);
+
     const Handletoggle = () => {
-      const nextTheme = theme ? false : true
-      setTheme(nextTheme)
+      setOnn(off ? false : true)
+      setTheme(theme ? false : true)
     };
 
-    const defaultOptions = {
-      loop: true,
-      autoplay: true,
-      rendererSettings: {
-        preserveAspectRatio:'xMidYMid slice'
-      }
-    }
+ 
+    useEffect(()=>{
+        if(off){
+          Animated.sequence([
+               Animated.timing(animateXY, {
+                toValue: { x: 0, y: 40 },
+                duration: 400,
+            }),
+          ]).start()
+        }else{
+          Animated.sequence([
+            Animated.timing(animateXY, {
+            toValue: { x: 40, y: 0 },
+            duration: 400,
+          }),
+        ]).start()
+        }
+      
+
+    })
+
     
+
+  
+
+   
 
     useEffect(() => {
         getList();
@@ -144,11 +164,26 @@ const HomeScreen= props => {
         <Container style={styles.backgroundBlack}>
                 <View style={{flexDirection: 'row', justifyContent:'space-evenly',alignItems:'center',marginTop:15}}>
                   <Text style={[{fontSize:15},styles.colorWhite]}>DARK MODE</Text>
-                      <TouchableOpacity onPress={Handletoggle} style={styles.switch}>
-                          <View style={styles.toggle}>                 
-                                <Icon name={ theme ? 'sunny' : 'moon'}/>
-                          </View>
+                    <TouchableOpacity onPress={Handletoggle} style={styles.switch}>
+                            <Animated.View 
+                              style={
+                                  {
+                                  width: '50%', 
+                                  height: '100%', 
+                                  alignItems:'center',
+                                  justifyContent:'center',
+                                  backgroundColor: 'white',
+                                  left: animateXY.x,
+                                  borderRadius: 20,
+                                  borderColor: 'black',
+                                  borderWidth: .5,
+                                  }
+                              }>
+                                    <Icon name={ theme ? 'sunny' : 'moon'}/>
+                            </Animated.View>
+
                       </TouchableOpacity>
+                      
                 </View>
                 <Content style={styles.content}>
                         <SwipeableFlatList
